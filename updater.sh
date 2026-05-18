@@ -45,16 +45,28 @@ update() {
     fi
 }
 
-if [[ $1 == "-c" || $1 == "--check" ]]; then
+# Initialize our control variables as false
+RUN_CHECK=false
+RUN_UPDATE=false
+UPDATE_TYPE=""
+
+# Loop through all arguments provided to the script
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -c|--check)     RUN_CHECK=true;                     shift ;;
+        -u|--update)    RUN_UPDATE=true;                    shift ;;
+        --repo-only)    UPDATE_TYPE="--repo";               shift ;;
+        --aur-only)     UPDATE_TYPE="--aur";                shift ;;
+        -h|--help)      help;                               exit 0 ;;
+        *)              echo "Unknown argument: $1"; help;  exit 1 ;;
+    esac
+done
+
+if [ "$RUN_CHECK" = true ]; then
     check
-elif [[ $1 == "-u" || $1 == "--update" ]]; then
-    if [[ "$2" == "--repo-only" ]]; then
-        update "--repo"
-    elif [[ "$2" == "--aur-only" ]]; then
-        update "--aur"
-    else
-        update
-    fi
+elif [ "$RUN_UPDATE" = true ]; then
+    update $UPDATE_TYPE
 else
+    # Default fallback if they ran the script with no arguments at all
     help
 fi
