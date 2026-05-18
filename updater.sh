@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly VERSION="0.22"
+readonly VERSION="0.23"
 
 help() {
     local desc="Bash/Yay(KDE) Updater $VERSION\nSimple shellscript for checking/displaying updates provided thru AUR and upon click updating!\n"
