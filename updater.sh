@@ -20,8 +20,7 @@ help() {
     printf "$desc\n$flags\n"
 }
 
-check() {
-    # Periodicly run
+check() { # Periodicly run
     updates_found=$(yay -Qu | wc -l)
     case "$updates_found" in
         0) output="" ;;
@@ -34,8 +33,7 @@ check() {
     fi
 }
 
-update() {
-    # Run on click-events; takes 1 arguement for limiting installs
+update() { # Run upon trigger/click
     if [[ -z $1 ]]; then
         #echo "Install ALL"
         yes | yay -Syu
@@ -45,12 +43,10 @@ update() {
     fi
 }
 
-# Initialize our control variables as false
 RUN_CHECK=false
 RUN_UPDATE=false
 UPDATE_TYPE=""
 
-# Loop through all arguments provided to the script
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -c|--check)     RUN_CHECK=true;                     shift ;;
@@ -67,6 +63,5 @@ if [ "$RUN_CHECK" = true ]; then
 elif [ "$RUN_UPDATE" = true ]; then
     update $UPDATE_TYPE
 else
-    # Default fallback if they ran the script with no arguments at all
     help
 fi
