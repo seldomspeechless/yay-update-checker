@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
-readonly VERSION="0.23"
+readonly VERSION="0.24"
+if [ -t 1 ]; then # terminal is interactive (not file or pipe)
+    BOLD=$(tput bold); RED=$(tput setaf 1); GREEN=$(tput setaf 2); RESET=$(tput sgr0)
+else
+    BOLD=""; RED=""; GREEN=""; RESET=""
+fi
 
 help() {
     local desc="Bash/Yay(KDE) Updater $VERSION\nSimple shellscript for checking/displaying updates provided thru AUR and upon click updating!\n"
-    local flags="Usage: $0 [flags]\n"
+    local flags="${BOLD}Usage: $0 [flags]${RESET}\n"
     flags+="-c|--check\tCheck for updates?\n"
     flags+="-h|--help\tShow this help.\n"
     flags+="-u|--update\tUpdate!\n"
