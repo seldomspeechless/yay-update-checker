@@ -58,5 +58,3 @@ elif [[ $1 == "-u" || $1 == "--update" ]]; then
 else
     help
 fi
-
-echo "bleh ${RED}why?!${BOLD}?!?!?!??!${RESET}"
