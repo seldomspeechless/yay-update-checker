@@ -2,7 +2,7 @@
 
 readonly VERSION="0.24"
 if [ -t 1 ]; then # terminal is interactive (not file or pipe)
-    BOLD=$(tput bold); RED=$(tput setaf 1); GREEN=$(tput setaf 2); RESET=$(tput sgr0)
+    BOLD=$(tput bold); RED=$(tput setaf 1); GREEN=$(tput setaf 2); YELLOW=$(tput setaf 3); RESET=$(tput sgr0)
 else
     BOLD=""; RED=""; GREEN=""; RESET=""
 fi
@@ -21,7 +21,7 @@ help() {
 }
 
 check() { # Periodicly run
-    updates_found=$(yay -Qu | wc -l)
+    updates_found=$( (checkupdates; yay -Qua) | wc -l )
     case "$updates_found" in
         0) output="" ;;
         1) output="1 update" ;;
@@ -29,17 +29,24 @@ check() { # Periodicly run
     esac
 
     if [[ -n $output ]]; then
-        echo $output
+        if [[ $updates_found > 250 ]]; then
+            echo -n ${RED}
+        elif [[ $updates_found > 100 ]]; then
+            echo -n ${YELLOW}
+        fi
+        echo $output ${RESET}
     fi
 }
 
 update() { # Run upon trigger/click
+    local auto_flags=(--noconfirm --answerdiff None --answerclean None) #--ask 4
+
     if [[ -z $1 ]]; then
         #echo "Install ALL"
-        yes | yay -Syu
+        yay -Syu "${auto_flags[@]}"
     else
         #echo "Install with custom flags: $1"
-        yay -Squ $1
+        yay -Syu --answerdiff None --answerclean None "$@"
     fi
 }
 
