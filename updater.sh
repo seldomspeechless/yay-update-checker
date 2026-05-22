@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 readonly VERSION="0.30"
+readonly LOGFILE="$HOME/.cache/yay_update.log"
 if [ -t 1 ]; then # terminal is interactive (not file or pipe)
     BOLD=$(tput bold); RED=$(tput setaf 1); GREEN=$(tput setaf 2); YELLOW=$(tput setaf 3); RESET=$(tput sgr0)
 else
@@ -39,22 +40,20 @@ check() { # Periodicly run
 }
 
 update() { # Run upon trigger/click
-    local log_file="$HOME/.cache/yay_update.log"
     local auto_flags=(--noconfirm --answerdiff None --answerclean None) #--overwrite="*" --ask 4
 
     if [[ -z $1 ]]; then #echo "Install ALL"
-        if yay -Syu "${auto_flags[@]}" 2>> "$log_file"; then
+        if yay -Syu "${auto_flags[@]}" 2>> "$LOGFILE"; then
             notify-send -t 2500 "System Update" "✓ Upgrade completed successfully!" --icon=object-select
         else
-            # Grab the last line of the error log to show in the notification
-            local last_err=$(tail -n 1 "$log_file")
+            local last_err=$(tail -n 1 "$LOGFILE")
             notify-send "System Update" "❌ Upgrade failed!\nError: $last_err" --urgency=critical --icon=dialog-error
         fi
     else #echo "Install with custom flags: $1"
-        if yay -Syu --answerdiff None --answerclean None "$@" 2>> "$log_file"; then
+        if yay -Syu --answerdiff None --answerclean None "$@" 2>> "$LOGFILE"; then
             notify-send -t 2500 "System Update" "✓ Custom upgrade completed!" --icon=object-select
         else
-            local last_err=$(tail -n 1 "$log_file")
+            local last_err=$(tail -n 1 "$LOGFILE")
             notify-send "System Update" "❌ Custom upgrade failed!\nError: $last_err" --urgency=critical --icon=dialog-error
         fi
     fi
