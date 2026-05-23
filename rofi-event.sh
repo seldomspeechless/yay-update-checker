@@ -2,6 +2,7 @@
 
 readonly LOGFILE="$HOME/.cache/yay_update.log"
 
+yay -Syy
 mapfile -t updates < <(yay -Qu)
 if (( ${#updates[@]} == 0 )); then
     notify-send -t 2500 "Your system is fully up to date!"
